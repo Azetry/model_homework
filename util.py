@@ -96,14 +96,16 @@ try:
     features = pd.read_csv(args.features)
     features = list(features.columns)
 except Exception as e:
-    exit("Error-features")
+    features = None
 
 if int(args.type) not in problems: exit("Error-type: Not in problems.")
 else: problem_type = int(args.type)
 
 outfile = args.out
+# exit(features)
 
-selected_df = raw_df[features]
+if features: selected_df = raw_df[features]
+else: selected_df = raw_df.drop(columns=['label'])
 labels = raw_df.label
 preds = model.predict(selected_df)
 
@@ -153,6 +155,6 @@ results = eval_classification(selected_df, labels, model)
 print(results)
 
 if outfile: 
-    results.to_csv(outfile)
+    results.to_csv(outfile, index=False)
     print(f"Save results:{outfile}")
 
